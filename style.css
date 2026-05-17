@@ -1,0 +1,65 @@
+/* Базові стилі (Mobile-First) */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Секція Hero (банер) */
+.hero-section {
+    height: 40vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&q=80') center/cover;
+    padding: 20px;
+}
+
+.shadow-text {
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+}
+
+/* Анімація карток */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.product-img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Кошик - кнопки кількості */
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Адаптивність через Media Queries (Просунутий рівень) */
+
+/* Для планшетів */
+@media (min-width: 768px) {
+    .hero-section {
+        height: 50vh;
+    }
+}
+
+/* Для ПК */
+@media (min-width: 992px) {
+    .hero-section {
+        height: 60vh;
+    }
+    .product-img {
+        height: 250px;
+    }
+}

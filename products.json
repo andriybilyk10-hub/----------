@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Маргарита",
+    "description": "Томатний соус, моцарела, базилік",
+    "price": 180,
+    "category": "pizza",
+    "image": "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500&auto=format&fit=crop",
+    "recommended": true
+  },
+  {
+    "id": 2,
+    "name": "Пепероні",
+    "description": "Моцарела, гострі ковбаски пепероні",
+    "price": 220,
+    "category": "pizza",
+    "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop",
+    "recommended": true
+  },
+  {
+    "id": 3,
+    "name": "Чотири сири",
+    "description": "Пармезан, дор блю, чеддер, вершковий соус",
+    "price": 250,
+    "category": "pizza",
+    "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop",
+    "recommended": false
+  },
+  {
+    "id": 4,
+    "name": "Барбекю",
+    "description": "Курка, бекон, цибуля, соус BBQ",
+    "price": 240,
+    "category": "pizza",
+    "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&auto=format&fit=crop",
+    "recommended": true
+  },
+  {
+    "id": 5,
+    "name": "Coca-Cola 0.5л",
+    "description": "Охолоджений напій",
+    "price": 40,
+    "category": "drinks",
+    "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500&auto=format&fit=crop",
+    "recommended": false
+  },
+  {
+    "id": 6,
+    "name": "Апельсиновий сік",
+    "description": "Свіжовичавлений фреш 0.3л",
+    "price": 60,
+    "category": "drinks",
+    "image": "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500&auto=format&fit=crop",
+    "recommended": false
+  },
+  {
+    "id": 7,
+    "name": "Чизкейк",
+    "description": "Ніжний сирний десерт",
+    "price": 110,
+    "category": "desserts",
+    "image": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&auto=format&fit=crop",
+    "recommended": true
+  },
+  {
+    "id": 8,
+    "name": "Тірамісу",
+    "description": "Італійський кавовий десерт",
+    "price": 130,
+    "category": "desserts",
+    "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&auto=format&fit=crop",
+    "recommended": false
+  },
+  {
+    "id": 9,
+    "name": "Морозиво Ванільне",
+    "description": "Кулька ванільного морозива",
+    "price": 50,
+    "category": "icecream",
+    "image": "https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=500&auto=format&fit=crop",
+    "recommended": false
+  },
+  {
+    "id": 10,
+    "name": "Морозиво Шоколадне",
+    "description": "З шоколадною крихтою",
+    "price": 55,
+    "category": "icecream",
+    "image": "https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=500&auto=format&fit=crop",
+    "recommended": false
+  }
+]
