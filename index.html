@@ -3,157 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PizzaTime - Доставка</title>
+    <title>PizzaTime - Твій ідеальний вибір</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* ================= CSS СТИЛІ ТА АНІМАЦІЇ ================= */
+        :root {
+            --brand-color: #ff8e3c;
+            --brand-hover: #f25f4c;
+            --transition: all 0.4s ease;
+        }
+
+        /* ================= ЕСТЕТИЧНИЙ ЖИВИЙ ФОН ================= */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            background-color: #fffaf5;
+            transition: background-color 0.3s ease;
         }
 
-        .fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
+        /* Патерн інгредієнтів */
+        .fixed-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ff8e3c' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Анімовані градієнтні хмаринки */
+        .bg-blobs {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .blob {
+            position: absolute; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255, 142, 60, 0.15) 0%, transparent 70%);
+            border-radius: 50%; filter: blur(60px);
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .blob-1 { top: -100px; right: -100px; }
+        .blob-2 { bottom: -100px; left: -100px; background: radial-gradient(circle, rgba(242, 95, 76, 0.1) 0%, transparent 70%); }
+        
+        @keyframes float {
+            from { transform: translate(0, 0) rotate(0deg); }
+            to { transform: translate(50px, 100px) rotate(10deg); }
         }
 
-        .hero-section {
-            height: 40vh;
-            /* Ідеальне фото для банера (темна піца) */
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&q=80') center/cover;
-            padding: 20px;
+        [data-bs-theme="dark"] body { background-color: #121416; }
+        [data-bs-theme="dark"] .fixed-pattern { filter: invert(1); opacity: 0.05; }
+
+        /* ================= LANDING (ГОЛОВНИЙ ЕКРАН) ================= */
+        #landing-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1200&q=80') center/cover;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: white;
+            z-index: 9999; transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1); padding: 20px;
         }
+        .main-logo-svg { filter: drop-shadow(0 0 20px rgba(255,142,60,0.5)); margin-bottom: 20px; animation: pulse 3s infinite ease-in-out; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        .shadow-text { text-shadow: 2px 2px 8px rgba(0,0,0,0.9); }
+        .landing-title { font-weight: 800; font-size: clamp(3rem, 10vw, 6rem); margin-bottom: 5px; }
+        .landing-desc { font-size: clamp(1rem, 3vw, 1.4rem); opacity: 0.9; max-width: 800px; margin-bottom: 40px; }
+        .landing-info { display: flex; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center; }
+        .info-box i { color: var(--brand-color); font-size: 2.5rem; display: block; margin-bottom: 10px; }
 
-        .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--bs-border-color);
-            border-radius: 15px;
-            overflow: hidden;
-            height: 100%;
-        }
+        /* ================= ДОДАТОК ================= */
+        .app-content { display: none; }
+        .page-section { display: none; opacity: 0; transform: translateY(20px); transition: var(--transition); }
+        .page-section.active { display: block; opacity: 1; transform: translateY(0); }
 
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-        }
+        .navbar { backdrop-filter: blur(15px); background: rgba(33, 37, 41, 0.92) !important; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn { background: none; border: none; color: white; font-weight: 600; padding: 10px 20px; transition: 0.3s; opacity: 0.7; }
+        .nav-btn:hover, .nav-btn.active { opacity: 1; color: var(--brand-color) !important; }
 
-        .product-img {
-            height: 200px;
-            object-fit: cover;
-            background-color: #f8f9fa;
-        }
+        .product-card { border: none; border-radius: 30px; background: rgba(var(--bs-tertiary-bg-rgb), 0.8); backdrop-filter: blur(10px); overflow: hidden; transition: 0.3s; height: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .product-img { height: 220px; object-fit: cover; }
 
-        .qty-btn {
-            width: 30px;
-            height: 30px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
+        .btn-brand { background: var(--brand-color); color: white; border-radius: 50px; border: none; font-weight: 700; padding: 10px 25px; transition: 0.3s; }
+        .btn-brand:hover { background: var(--brand-hover); color: white; transform: scale(1.05); }
 
-        .nav-link, .theme-toggle { cursor: pointer; transition: 0.3s ease; }
-        .theme-toggle { font-size: 1.2rem; color: #ffc107; }
-        .theme-toggle:hover { transform: rotate(20deg) scale(1.1); }
+        .filter-btn { border-radius: 50px; padding: 10px 25px; font-weight: 700; transition: 0.3s; margin: 5px; }
+        .badge-new { position: absolute; top: 15px; left: 15px; background: #ff3e3e; color: white; padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; z-index: 2; }
 
-        @media (min-width: 768px) { .hero-section { height: 50vh; } }
-        @media (min-width: 992px) { .hero-section { height: 60vh; } .product-img { height: 220px; } }
+        /* СПОВІЩЕННЯ */
+        #toast-container-site { position: fixed; top: 80px; right: 20px; z-index: 10001; min-width: 280px; }
+        .custom-toast { background: var(--brand-color); color: white; border-radius: 15px; border: none; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: slideIn 0.3s ease-out; margin-bottom: 10px; padding: 15px; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- ================= НАВІГАЦІЯ ================= -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-warning" onclick="switchPage('home')" style="cursor: pointer;">
-                <i class="bi bi-pie-chart-fill"></i> PizzaTime
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link text-white nav-tab fw-semibold" id="tab-home" onclick="switchPage('home')">Головна</a></li>
-                    <li class="nav-item"><a class="nav-link nav-tab fw-semibold" id="tab-menu" onclick="switchPage('menu')">Меню</a></li>
-                    <li class="nav-item"><a class="nav-link nav-tab fw-semibold" id="tab-orders" onclick="switchPage('orders')">Мої замовлення</a></li>
-                </ul>
-                <div class="d-flex align-items-center gap-3 mt-2 mt-lg-0">
-                    <i class="bi bi-sun-fill theme-toggle" id="theme-icon" onclick="toggleTheme()" title="Змінити тему"></i>
-                    <button class="btn btn-warning position-relative fw-bold" data-bs-toggle="modal" data-bs-target="#cartModal">
-                        <i class="bi bi-cart3"></i> Кошик
-                        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow">0</span>
-                    </button>
-                </div>
-            </div>
+    <!-- ФОНОВІ ЕЛЕМЕНТИ -->
+    <div class="fixed-pattern"></div>
+    <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+
+    <!-- ГОЛОВНИЙ ЕКРАН -->
+    <div id="landing-screen">
+        <svg class="main-logo-svg" width="120" height="120" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="45" stroke="#ff8e3c" stroke-width="5"/>
+            <path d="M50 10V50L80 50" stroke="#ff8e3c" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="30" cy="35" r="4" fill="#ff3e3e"/><circle cx="65" cy="25" r="4" fill="#ff3e3e"/><circle cx="45" cy="75" r="4" fill="#ff3e3e"/>
+        </svg>
+        <h1 class="landing-title">Pizza<span style="color: var(--brand-color);">Time</span></h1>
+        <p class="landing-desc">Справжня італійська душа в кожному шматочку. Ми готуємо у справжній дров'яній печі та доставляємо за 30 хвилин. Смакуй мить!</p>
+        <div class="landing-info">
+            <div class="info-box"><i class="bi bi-lightning-charge"></i><span>Швидка доставка</span></div>
+            <div class="info-box"><i class="bi bi-fire"></i><span>Дров'яна піч</span></div>
+            <div class="info-box"><i class="bi bi-award"></i><span>Топ інгредієнти</span></div>
         </div>
-    </nav>
+        <button class="btn btn-brand btn-lg px-5 py-3 fs-4 shadow-lg" onclick="startApp()">Відкрити меню</button>
+    </div>
 
-    <!-- ================= СТОРІНКА 1: ГОЛОВНА ================= -->
-    <div id="page-home" class="page-section fade-in">
-        <header class="hero-section text-center text-white d-flex align-items-center justify-content-center">
+    <!-- ЛОАДЕР -->
+    <div id="loader-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10000;">
+        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem;"></div><p class="mt-3 fw-bold">Завантаження смаку...</p>
+    </div>
+
+    <div id="toast-container-site"></div>
+
+    <!-- ДОДАТОК -->
+    <div class="app-content" id="main-app">
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
             <div class="container">
-                <h1 class="display-3 fw-bold shadow-text mb-3">PizzaTime - Більше ніж піца!</h1>
-                <p class="lead shadow-text mb-4 fs-4">Швидка доставка, найкращі інгредієнти та неймовірний смак.</p>
-                <button onclick="switchPage('menu')" class="btn btn-warning btn-lg fw-bold shadow">Перейти до меню</button>
-            </div>
-        </header>
-        <main class="container my-5">
-            <h2 class="text-center fw-bold mb-4">🔥 Хіти продажу</h2>
-            <div class="row" id="recommended-container"></div>
-        </main>
-    </div>
-
-    <!-- ================= СТОРІНКА 2: МЕНЮ ================= -->
-    <div id="page-menu" class="page-section d-none">
-        <main class="container my-5">
-            <h2 class="text-center fw-bold mb-4">Наше Меню</h2>
-            <div class="d-flex justify-content-center flex-wrap gap-2 mb-4" id="filters">
-                <button class="btn btn-secondary active" onclick="filterProducts('all')">Всі товари</button>
-                <button class="btn btn-outline-secondary" onclick="filterProducts('pizza')">🍕 Піци</button>
-                <button class="btn btn-outline-secondary" onclick="filterProducts('drinks')">🥤 Напої</button>
-                <button class="btn btn-outline-secondary" onclick="filterProducts('desserts')">🍰 Десерти</button>
-                <button class="btn btn-outline-secondary" onclick="filterProducts('icecream')">🍦 Морозиво</button>
-            </div>
-            <div class="row" id="products-container"></div>
-        </main>
-    </div>
-
-    <!-- ================= СТОРІНКА 3: ІСТОРІЯ ЗАМОВЛЕНЬ ================= -->
-    <div id="page-orders" class="page-section d-none">
-        <main class="container my-5">
-            <h2 class="text-center fw-bold mb-4"><i class="bi bi-clock-history"></i> Історія замовлень</h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8" id="orders-container"></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- ================= МОДАЛЬНЕ ВІКНО КОШИКА ================= -->
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-dark border-0">
-                    <h5 class="modal-title fw-bold">Ваше замовлення</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="navbar-brand fw-800 fs-3 d-flex align-items-center gap-2" onclick="goHome()" style="cursor:pointer">
+                    <svg width="30" height="30" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke="#ff8e3c" stroke-width="8"/><path d="M50 15V50L80 50" stroke="#ff8e3c" stroke-width="8" stroke-linecap="round"/></svg>
+                    <span>PizzaTime</span>
                 </div>
-                <div class="modal-body bg-body">
-                    <div id="cart-items" class="mb-3"></div>
-                    <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-3">
-                        <span>Загальна сума:</span><span id="cart-total" class="text-danger">0 ₴</span>
+                <div class="collapse navbar-collapse show">
+                    <div class="navbar-nav mx-auto">
+                        <button class="nav-btn active" id="btn-home" onclick="goHome()">Головна</button>
+                        <button class="nav-btn" id="btn-menu" onclick="switchPage('menu')">Меню</button>
+                        <button class="nav-btn" id="btn-orders" onclick="switchPage('orders')">Мої замовлення</button>
                     </div>
-                    <form id="checkout-form" class="mt-4 border-top pt-3 d-none">
-                        <div class="mb-2"><input type="text" class="form-control" placeholder="Ім'я" required></div>
-                        <div class="mb-2"><input type="tel" class="form-control" placeholder="Телефон" required></div>
-                        <div class="mb-2"><input type="text" class="form-control" placeholder="Адреса доставки" required></div>
-                        <button type="submit" class="btn btn-success w-100 mt-3 fw-bold py-2 shadow-sm">Оформити замовлення</button>
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-moon-stars text-warning fs-4" style="cursor:pointer" onclick="toggleTheme()"></i>
+                        <button class="btn btn-brand position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+                            <i class="bi bi-cart3"></i><span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div id="page-menu" class="page-section">
+            <main class="container my-5">
+                <!-- РЯДОК НОВИНОК -->
+                <h2 class="fw-800 mb-4 px-2">🔥 Новинки тижня</h2>
+                <div class="row g-4 mb-5" id="news-container"></div>
+
+                <h2 class="fw-800 mb-4 px-2 text-center">Наше Меню</h2>
+                <div class="d-flex gap-2 mb-5 flex-wrap justify-content-center" id="filter-btns">
+                    <button class="btn btn-brand filter-btn" onclick="filterProducts('all', this)">Все</button>
+                    <button class="btn btn-outline-secondary filter-btn" onclick="filterProducts('pizza', this)">Піца</button>
+                    <button class="btn btn-outline-secondary filter-btn" onclick="filterProducts('drinks', this)">Напої</button>
+                    <button class="btn btn-outline-secondary filter-btn" onclick="filterProducts('desserts', this)">Десерти</button>
+                    <button class="btn btn-outline-secondary filter-btn" onclick="filterProducts('icecream', this)">Морозиво</button>
+                </div>
+                <div class="row g-4" id="products-container"></div>
+            </main>
+        </div>
+
+        <div id="page-orders" class="page-section">
+            <main class="container my-5">
+                <h2 class="text-center fw-800 mb-5">Ваша історія замовлень</h2>
+                <div class="row justify-content-center" id="orders-container"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА КОШИКА -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 35px;">
+                <div class="modal-header border-0 p-4 pb-0"><h5 class="modal-title fw-800 fs-3">Кошик</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body p-4 bg-body">
+                    <div id="cart-items" class="mb-4"></div>
+                    <div class="d-flex justify-content-between fw-800 fs-4 bg-light p-4 rounded-4 text-dark shadow-sm">
+                        <span>Разом:</span><span class="text-danger" id="cart-total">0 ₴</span>
+                    </div>
+                    <form id="checkout-form" class="mt-4 d-none">
+                        <div class="row g-3"><div class="col-md-6"><input type="text" class="form-control rounded-4 p-3 bg-light border-0 shadow-sm" placeholder="Ім'я" required></div><div class="col-md-6"><input type="tel" class="form-control rounded-4 p-3 bg-light border-0 shadow-sm" placeholder="Телефон" required></div><div class="col-12"><input type="text" class="form-control rounded-4 p-3 bg-light border-0 shadow-sm" placeholder="Адреса" required></div></div>
+                        <button type="submit" class="btn btn-brand w-100 mt-4 py-3 shadow">Замовити</button>
                     </form>
                 </div>
             </div>
@@ -161,423 +192,138 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- ================= JAVASCRIPT ЛОГІКА ================= -->
     <script>
-    // База товарів: 100% надійні посилання з Вікіпедії (Wikimedia), які ніколи не блокуються
-const products = [
-    // ПІЦИ
-    {
-        id: 1,
-        name: "Маргарита",
-        description: "Томатний соус, подвійна моцарела, свіжий базилік",
-        price: 180,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500&auto=format&fit=crop",
-        recommended: true
-    },
+    const products = [
+        { id: 1, name: "Маргарита", description: "Томатний соус, моцарела, базилік", price: 180, category: "pizza", image: "https://images.unsplash.com/photo-1604382355076-af4b0eb60143?w=500", isNew: false },
+        { id: 2, name: "Пепероні", description: "Ковбаски пепероні, моцарела", price: 220, category: "pizza", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500", isNew: true },
+        { id: 3, name: "Чотири сири", description: "Пармезан, чеддер, дор-блю, моцарела", price: 250, category: "pizza", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500", isNew: false },
+        { id: 4, name: "Барбекю", description: "Курка, бекон, соус BBQ, цибуля", price: 240, category: "pizza", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500", isNew: true },
+        { id: 5, name: "Гавайська", description: "Курка, солодкі ананаси, моцарела", price: 210, category: "pizza", image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=500", isNew: false },
+        { id: 6, name: "М'ясна", description: "Бекон, шинка, салямі, мисливські ковбаски", price: 270, category: "pizza", image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500", isNew: false },
+        { id: 7, name: "Вегетаріанська", description: "Гриби, перець, помідори, маслини", price: 190, category: "pizza", image: "https://plus.unsplash.com/premium_photo-1673439304183-8840bd0dc1bf?w=500", isNew: false },
+        { id: 8, name: "Морська", description: "Креветки, мідії, вершковий соус", price: 320, category: "pizza", image: "https://images.unsplash.com/photo-1564936281291-294551497d81?w=500", isNew: false },
+        { id: 9, name: "Coca-Cola", description: "Охолоджена 0.5л", price: 40, category: "drinks", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500", isNew: false },
+        { id: 10, name: "Апельсиновий фреш", description: "Свіжий сік 0.3л", price: 60, category: "drinks", image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500", isNew: false },
+        { id: 11, name: "Домашній лимонад", description: "Лимон, м'ята, лід 0.4л", price: 55, category: "drinks", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500", isNew: false },
+        { id: 12, name: "Мінеральна вода", description: "Газована з лимоном 0.5л", price: 30, category: "drinks", image: "https://images.unsplash.com/photo-1575596510825-f748919a2bf7?w=500", isNew: false },
+        { id: 13, name: "Чизкейк Нью-Йорк", description: "Сирний десерт", price: 110, category: "desserts", image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500", isNew: true },
+        { id: 14, name: "Тірамісу", description: "Італійський десерт", price: 130, category: "desserts", image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500", isNew: false },
+        { id: 15, name: "Шоколадний брауні", description: "Шоколадний кекс", price: 120, category: "desserts", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500", isNew: false },
+        { id: 16, name: "Панна Котта", description: "Вершковий десерт", price: 95, category: "desserts", image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500", isNew: false },
+        { id: 17, name: "Ванільне морозиво", description: "Класичне у ріжку", price: 50, category: "icecream", image: "https://images.unsplash.com/photo-1718810125230-e8e2271354f5?w=500", isNew: false },
+        { id: 18, name: "Шоколадне морозиво", description: "З крихтою", price: 55, category: "icecream", image: "https://images.unsplash.com/photo-1580915411954-282cb1b0d780?w=500", isNew: false },
+        { id: 19, name: "Полуничне морозиво", description: "Освіжаюче", price: 60, category: "icecream", image: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=500", isNew: false },
+        { id: 20, name: "Bubble Gum", description: "Морозиво Бабл-гам", price: 70, category: "icecream", image: "https://plus.unsplash.com/premium_photo-1733306657240-a398488ea835?w=500", isNew: true }
+    ];
 
-    {
-        id: 2,
-        name: "Пепероні",
-        description: "Моцарела, гострі італійські ковбаски пепероні",
-        price: 220,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=500&auto=format&fit=crop",
-        recommended: true
-    },
+    let cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
+    let ordersHistory = JSON.parse(localStorage.getItem('pizzaOrders')) || [];
 
-    {
-        id: 3,
-        name: "Чотири сири",
-        description: "Пармезан, дор блю, чеддер, моцарела",
-        price: 250,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop",
-        recommended: false
-    },
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        renderCards(products.filter(p => p.isNew), 'news-container');
+        renderCards(products, 'products-container');
+        updateCartUI();
+        renderOrders();
+        document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
+    });
 
-    {
-        id: 4,
-        name: "Барбекю",
-        description: "Куряче філе, бекон, червона цибуля, соус BBQ",
-        price: 240,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1613564834361-9436948817d1?q=80&w=743&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        recommended: true
-    },
-
-    {
-        id: 5,
-        name: "Гавайська",
-        description: "Куряче філе, солодкі ананаси, моцарела",
-        price: 210,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 6,
-        name: "М'ясна",
-        description: "Бекон, шинка, салямі, мисливські ковбаски",
-        price: 270,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=500&auto=format&fit=crop",
-        recommended: true
-    },
-
-    {
-        id: 7,
-        name: "Вегетаріанська",
-        description: "Гриби, болгарський перець, помідори, маслини",
-        price: 190,
-        category: "pizza",
-        image: "https://plus.unsplash.com/premium_photo-1673439304183-8840bd0dc1bf?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        recommended: false
-    },
-
-    {
-        id: 8,
-        name: "Морська",
-        description: "Креветки, мідії, кальмари, вершковий соус",
-        price: 320,
-        category: "pizza",
-        image: "https://images.unsplash.com/photo-1564936281291-294551497d81?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    // НАПОЇ
-    {
-        id: 9,
-        name: "Coca-Cola",
-        description: "Охолоджений напій 0.5л",
-        price: 40,
-        category: "drinks",
-        image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 10,
-        name: "Апельсиновий фреш",
-        description: "Свіжовичавлений сік 0.3л",
-        price: 60,
-        category: "drinks",
-        image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 11,
-        name: "Домашній лимонад",
-        description: "Лимон, м'ята, лід 0.4л",
-        price: 55,
-        category: "drinks",
-        image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500&auto=format&fit=crop",
-        recommended: true
-    },
-
-    {
-        id: 12,
-        name: "Мінеральна вода з лимоном",
-        description: "Газована вода з соком лимона 0.5л",
-        price: 30,
-        category: "drinks",
-        image: "https://images.unsplash.com/photo-1575596510825-f748919a2bf7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-        recommended: false
-    },
-
-    // ДЕСЕРТИ
-    {
-        id: 13,
-        name: "Чизкейк Нью-Йорк",
-        description: "Ніжний сирний десерт",
-        price: 110,
-        category: "desserts",
-        image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=500&auto=format&fit=crop",
-        recommended: true
-    },
-
-    {
-        id: 14,
-        name: "Тірамісу",
-        description: "Італійський кавовий десерт",
-        price: 130,
-        category: "desserts",
-        image: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 15,
-        name: "Шоколадний брауні",
-        description: "Гарячий кекс з шоколадом",
-        price: 120,
-        category: "desserts",
-        image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 16,
-        name: "Панна Котта",
-        description: "Вершковий десерт з ягідним соусом",
-        price: 95,
-        category: "desserts",
-        image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    // МОРОЗИВО
-    {
-        id: 17,
-        name: "Ванільне морозиво",
-        description: "Класичне біле морозиво у ріжку",
-        price: 50,
-        category: "icecream",
-        image: "https://images.unsplash.com/photo-1718810125230-e8e2271354f5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        recommended: false
-    },
-
-    {
-        id: 18,
-        name: "Шоколадне морозиво",
-        description: "Кульки шоколадного морозива",
-        price: 55,
-        category: "icecream",
-        image: "https://images.unsplash.com/photo-1580915411954-282cb1b0d780?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        recommended: true
-    },
-
-    {
-        id: 19,
-        name: "Полуничне морозиво",
-        description: "Освіжаюче морозиво з полуницею",
-        price: 60,
-        category: "icecream",
-        image: "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=500&auto=format&fit=crop",
-        recommended: false
-    },
-
-    {
-        id: 20,
-        name: "Морозиво Bubble Gum",
-        description: "Ніжне кольорове морозиво зі смаком жувальної гумки",
-        price: 70,
-        category: "icecream",
-        image: "https://plus.unsplash.com/premium_photo-1733306657240-a398488ea835?q=80&w=560&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        recommended: false
+    function showToast(msg, type = 'success') {
+        const cont = document.getElementById('toast-container-site');
+        const t = document.createElement('div');
+        t.className = `custom-toast shadow d-flex align-items-center justify-content-between`;
+        if(type === 'danger') t.style.background = '#ff3e3e';
+        t.innerHTML = `<span>${msg}</span><button class="btn-close btn-close-white ms-2" onclick="this.parentElement.remove()"></button>`;
+        cont.appendChild(t);
+        setTimeout(() => { if(t.parentElement) t.remove(); }, 3500);
     }
-];
 
-        let cart = JSON.parse(localStorage.getItem('pizzaCart')) || [];
-        let ordersHistory = JSON.parse(localStorage.getItem('pizzaOrders')) || [];
+    function startApp() { document.getElementById('landing-screen').style.transform = 'translateY(-100%)'; setTimeout(() => { document.getElementById('main-app').style.display = 'block'; switchPage('menu'); }, 300); }
+    function goHome() { document.getElementById('landing-screen').style.transform = 'translateY(0)'; }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme();
-            renderCards(products.filter(p => p.recommended), 'recommended-container');
-            renderCards(products, 'products-container');
-            updateCartUI();
-            renderOrders();
-            document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
-        });
-
-        // === ТЕМНА/СВІТЛА ТЕМА ===
-        function initTheme() {
-            const savedTheme = localStorage.getItem('pizzaTheme') || 'light';
-            document.documentElement.setAttribute('data-bs-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-        }
-
-        function toggleTheme() {
-            const html = document.documentElement;
-            const newTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-bs-theme', newTheme);
-            localStorage.setItem('pizzaTheme', newTheme);
-            updateThemeIcon(newTheme);
-        }
-
-        function updateThemeIcon(theme) {
-            const icon = document.getElementById('theme-icon');
-            icon.className = theme === 'dark' ? 'bi bi-moon-stars-fill theme-toggle text-info' : 'bi bi-sun-fill theme-toggle text-warning';
-        }
-
-        // === НАВІГАЦІЯ ТА АНІМАЦІЇ ===
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(sec => {
-                sec.classList.remove('fade-in');
-                sec.classList.add('d-none');
-            });
-            
-            const activePage = document.getElementById('page-' + pageId);
-            activePage.classList.remove('d-none');
-            void activePage.offsetWidth; 
-            activePage.classList.add('fade-in');
-
-            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('text-white'));
-            document.getElementById('tab-' + pageId).classList.add('text-white');
-
-            const navbarCollapse = document.getElementById('navbarNav');
-            if (navbarCollapse.classList.contains('show')) new bootstrap.Collapse(navbarCollapse).hide();
+    function switchPage(pageId) {
+        const loader = document.getElementById('loader-overlay'); loader.style.display = 'flex';
+        setTimeout(() => {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('btn-' + pageId).classList.add('active');
             if (pageId === 'orders') renderOrders();
-        }
+            loader.style.display = 'none'; window.scrollTo(0, 0);
+        }, 500);
+    }
 
-        // === ВІДОБРАЖЕННЯ ТОВАРІВ (Без "глюку" з піцою) ===
-        function renderCards(items, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            items.forEach(product => {
-                container.innerHTML += `
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex">
-                        <div class="card product-card bg-body-tertiary w-100">
-                            <img src="${product.image}" class="card-img-top product-img" alt="${product.name}">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title fw-bold">${product.name}</h5>
-                                <p class="card-text text-body-secondary small flex-grow-1">${product.description}</p>
-                                <div class="d-flex justify-content-between align-items-center mt-3 border-top pt-3 border-secondary-subtle">
-                                    <span class="fs-5 fw-bold text-danger">${product.price} ₴</span>
-                                    <button class="btn btn-warning fw-bold text-dark shadow-sm" onclick="addToCart(${product.id})">
-                                        <i class="bi bi-cart-plus"></i> В кошик
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+    function filterProducts(cat, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('btn-brand'); b.classList.add('btn-outline-secondary'); });
+        btn.classList.remove('btn-outline-secondary'); btn.classList.add('btn-brand');
+        const filtered = cat === 'all' ? products : products.filter(p => p.category === cat);
+        renderCards(filtered, 'products-container');
+    }
 
-        // Фільтрація
-        function filterProducts(category) {
-            document.querySelectorAll('#filters button').forEach(btn => {
-                btn.classList.remove('btn-secondary');
-                btn.classList.add('btn-outline-secondary');
-            });
-            event.target.classList.remove('btn-outline-secondary');
-            event.target.classList.add('btn-secondary');
+    function renderCards(items, containerId) {
+        const container = document.getElementById(containerId); if(!container) return; container.innerHTML = '';
+        items.forEach(product => {
+            container.innerHTML += `<div class="col-12 col-sm-6 col-md-4 col-lg-3"><div class="card product-card position-relative">${product.isNew ? '<span class="badge-new">NEW</span>' : ''}<img src="${product.image}" class="product-img" alt="${product.name}"><div class="card-body d-flex flex-column p-4"><h5 class="fw-bold mb-1">${product.name}</h5><p class="text-body-secondary small flex-grow-1">${product.description}</p><div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top"><span class="fs-4 fw-bold text-danger">${product.price} ₴</span><button class="btn btn-brand btn-sm px-3" onclick="addToCart(${product.id})"><i class="bi bi-plus-lg"></i></button></div></div></div></div>`;
+        });
+    }
 
-            renderCards(category === 'all' ? products : products.filter(p => p.category === category), 'products-container');
-        }
+    function addToCart(pid) {
+        const p = products.find(x => x.id === pid); const exist = cart.find(x => x.id === pid);
+        if(exist) exist.quantity++; else cart.push({ ...p, quantity: 1 });
+        saveAndUI(); showToast(`"${p.name}" додано!`);
+    }
 
-        // === ЛОГІКА КОШИКА ===
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existing = cart.find(item => item.id === productId);
-            
-            if (existing) existing.quantity++;
-            else cart.push({ ...product, quantity: 1 });
+    function removeFromCart(pid) { cart = cart.filter(x => x.id !== pid); saveAndUI(); showToast("Видалено з кошика", "danger"); }
 
-            saveCart();
-            updateCartUI();
-            
-            const badge = document.getElementById('cart-badge');
-            badge.classList.add('bg-success');
-            badge.style.transform = "scale(1.3)";
-            setTimeout(() => {
-                badge.classList.remove('bg-success');
-                badge.style.transform = "translate(-50%, -50%)"; 
-            }, 300);
-        }
+    function changeQty(pid, d) {
+        const i = cart.find(x => x.id === pid);
+        if(i) { i.quantity += d; if(i.quantity <= 0) cart = cart.filter(x => x.id !== pid); saveAndUI(); }
+    }
 
-        function changeQuantity(productId, delta) {
-            const item = cart.find(i => i.id === productId);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) cart = cart.filter(i => i.id !== productId);
-                saveCart();
-                updateCartUI();
-            }
-        }
+    function saveAndUI() { localStorage.setItem('pizzaCart', JSON.stringify(cart)); updateCartUI(); }
 
-        function saveCart() { localStorage.setItem('pizzaCart', JSON.stringify(cart)); }
+    function updateCartUI() {
+        document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.quantity, 0);
+        const itemsCont = document.getElementById('cart-items'); const form = document.getElementById('checkout-form');
+        if (cart.length === 0) { itemsCont.innerHTML = '<div class="text-center py-4">Кошик порожній 🛒</div>'; document.getElementById('cart-total').innerText = '0 ₴'; form.classList.add('d-none'); return; }
+        form.classList.remove('d-none'); itemsCont.innerHTML = ''; let total = 0;
+        cart.forEach(item => {
+            total += item.price * item.quantity;
+            itemsCont.innerHTML += `<div class="d-flex justify-content-between align-items-center mb-3 bg-light p-3 rounded-4 text-dark shadow-sm"><div class="d-flex align-items-center gap-2"><button class="btn btn-sm text-danger border-0" onclick="removeFromCart(${item.id})"><i class="bi bi-trash"></i></button><div><h6 class="mb-0 fw-bold">${item.name}</h6><small>${item.price} ₴</small></div></div><div class="d-flex gap-2"><button class="btn btn-sm btn-dark rounded-pill px-3" onclick="changeQty(${item.id},-1)">-</button><span class="fw-bold align-self-center mx-2">${item.quantity}</span><button class="btn btn-sm btn-dark rounded-pill px-3" onclick="changeQty(${item.id},1)">+</button></div></div>`;
+        });
+        document.getElementById('cart-total').innerText = total + ' ₴';
+    }
 
-        function updateCartUI() {
-            document.getElementById('cart-badge').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const itemsCont = document.getElementById('cart-items');
-            const form = document.getElementById('checkout-form');
+    function handleCheckout(e) {
+        e.preventDefault(); const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+        ordersHistory.unshift({ id: Math.floor(Math.random()*90000)+10000, date: new Date().toLocaleString(), items: [...cart], total: total });
+        localStorage.setItem('pizzaOrders', JSON.stringify(ordersHistory)); cart = []; saveAndUI();
+        const modal = bootstrap.Modal.getInstance(document.getElementById('cartModal')); if(modal) modal.hide();
+        switchPage('orders'); showToast("Замовлення оформлено!");
+    }
 
-            if (cart.length === 0) {
-                itemsCont.innerHTML = '<p class="text-center text-body-secondary my-4">Кошик порожній 🛒</p>';
-                document.getElementById('cart-total').innerText = '0 ₴';
-                form.classList.add('d-none');
-                return;
-            }
+    function confirmDeleteOrder(id) {
+        document.getElementById(`order-actions-${id}`).innerHTML = `<div class="d-flex gap-2"><button class="btn btn-sm btn-danger px-3 rounded-pill" onclick="executeDelete(${id})">Так</button><button class="btn btn-sm btn-secondary px-3 rounded-pill" onclick="renderOrders()">Ні</button></div>`;
+    }
 
-            form.classList.remove('d-none');
-            itemsCont.innerHTML = '';
-            let total = 0;
+    function executeDelete(id) { ordersHistory = ordersHistory.filter(o => o.id !== id); localStorage.setItem('pizzaOrders', JSON.stringify(ordersHistory)); renderOrders(); showToast("Видалено", "danger"); }
 
-            cart.forEach(item => {
-                total += item.price * item.quantity;
-                itemsCont.innerHTML += `
-                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-secondary-subtle pb-2">
-                        <div>
-                            <h6 class="mb-0 fw-bold">${item.name}</h6>
-                            <small class="text-body-secondary">${item.price} ₴ x ${item.quantity}</small>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-outline-danger qty-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
-                            <span class="fw-bold align-self-center mx-1">${item.quantity}</span>
-                            <button class="btn btn-sm btn-outline-success qty-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
-                        </div>
-                    </div>`;
-            });
-            document.getElementById('cart-total').innerText = `${total} ₴`;
-        }
+    function renderOrders() {
+        const container = document.getElementById('orders-container'); if (!container) return;
+        if (ordersHistory.length === 0) { container.innerHTML = '<div class="text-center p-5 opacity-50">Історія порожня</div>'; return; }
+        container.innerHTML = '';
+        ordersHistory.forEach(o => {
+            container.innerHTML += `<div class="col-lg-10 mx-auto mb-4"><div class="card border-0 shadow-sm rounded-4 p-4 bg-body-tertiary border-start border-warning border-5"><div class="d-flex justify-content-between mb-3 border-bottom pb-2"><div><h5 class="fw-bold mb-0">Замовлення #${o.id}</h5><small class="text-muted">${o.date}</small></div><div id="order-actions-${o.id}"><button class="btn btn-link text-danger p-0" onclick="confirmDeleteOrder(${o.id})"><i class="bi bi-trash3 fs-5"></i></button></div></div><ul class="list-unstyled mb-3">${o.items.map(i => `<li>${i.name} x${i.quantity}</li>`).join('')}</ul><div class="d-flex justify-content-between align-items-center pt-2"><span class="badge bg-success rounded-pill px-3">Готово</span><h4 class="fw-bold text-danger mb-0">${o.total} ₴</h4></div></div></div>`;
+        });
+    }
 
-        // === ОФОРМЛЕННЯ ЗАМОВЛЕННЯ ===
-        function handleCheckout(e) {
-            e.preventDefault();
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            ordersHistory.unshift({
-                id: Math.floor(Math.random() * 90000) + 10000, 
-                date: new Date().toLocaleString('uk-UA'),
-                items: [...cart],
-                totalPrice: total
-            });
-
-            localStorage.setItem('pizzaOrders', JSON.stringify(ordersHistory));
-            cart = [];
-            saveCart();
-            updateCartUI();
-            e.target.reset();
-
-            bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
-            switchPage('orders');
-        }
-
-        // === ІСТОРІЯ ЗАМОВЛЕНЬ ===
-        function renderOrders() {
-            const container = document.getElementById('orders-container');
-            if (ordersHistory.length === 0) {
-                container.innerHTML = `
-                    <div class="alert alert-secondary text-center shadow-sm">
-                        <i class="bi bi-box-seam fs-1 d-block mb-2"></i>
-                        <h5 class="fw-bold">Ви ще нічого не замовляли</h5>
-                        <button onclick="switchPage('menu')" class="btn btn-warning mt-2 fw-bold shadow-sm">Перейти до меню</button>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            ordersHistory.forEach(order => {
-                let itemsHTML = order.items.map(i => `<li>${i.name} <span class="text-body-secondary">(x${i.quantity})</span></li>`).join('');
-                container.innerHTML += `
-                    <div class="card mb-4 shadow-sm bg-body-tertiary border-0 border-start border-warning border-5">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom border-secondary-subtle pb-2">
-                                <span class="fw-bold fs-5">Замовлення #<span class="text-warning">${order.id}</span></span>
-                                <span class="badge bg-success shadow-sm fs-6">Успішно</span>
-                            </div>
-                            <p class="mb-2 text-body-secondary"><i class="bi bi-calendar3"></i> ${order.date}</p>
-                            <ul class="mb-3 ps-3 fw-medium">${itemsHTML}</ul>
-                            <h4 class="fw-bold mb-0 text-end text-danger">Разом: ${order.totalPrice} ₴</h4>
-                        </div>
-                    </div>`;
-            });
-        }
+    function initTheme() { const t = localStorage.getItem('pizzaTheme') || 'light'; document.documentElement.setAttribute('data-bs-theme', t); }
+    function toggleTheme() {
+        const cur = document.documentElement.getAttribute('data-bs-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-bs-theme', next);
+        localStorage.setItem('pizzaTheme', next);
+    }
     </script>
 </body>
 </html>
